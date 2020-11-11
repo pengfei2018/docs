@@ -1,0 +1,369 @@
+﻿kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: nacos
+  namespace: ccic-caas-portal-prod
+  selfLink: /apis/apps/v1/namespaces/ccic-caas-portal-prod/statefulsets/nacos
+  uid: 633cb69e-1596-4484-b1cc-7a9bd897e316
+  resourceVersion: '57245058'
+  generation: 24
+  creationTimestamp: '2020-10-10T01:21:59Z'
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: apps/v1
+      time: '2020-10-10T08:53:40Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:podManagementPolicy': {}
+          'f:replicas': {}
+          'f:revisionHistoryLimit': {}
+          'f:selector':
+            'f:matchLabels':
+              .: {}
+              'f:app': {}
+          'f:serviceName': {}
+          'f:template':
+            'f:metadata':
+              'f:annotations':
+                .: {}
+                'f:pod.alpha.kubernetes.io/initialized': {}
+              'f:labels':
+                .: {}
+                'f:app': {}
+            'f:spec':
+              'f:containers':
+                'k:{"name":"nacos"}':
+                  'f:image': {}
+                  'f:volumeMounts':
+                    .: {}
+                    'k:{"mountPath":"/home/nacos/data"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+                    'k:{"mountPath":"/home/nacos/logs"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+                    'k:{"mountPath":"/home/nacos/plugins/peer-finder"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+                  'f:terminationMessagePolicy': {}
+                  .: {}
+                  'f:resources':
+                    .: {}
+                    'f:limits':
+                      .: {}
+                      'f:cpu': {}
+                      'f:memory': {}
+                    'f:requests':
+                      .: {}
+                      'f:cpu': {}
+                      'f:memory': {}
+                  'f:env':
+                    'k:{"name":"NACOS_SERVER_PORT"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"MYSQL_SERVICE_PASSWORD"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:secretKeyRef':
+                          .: {}
+                          'f:key': {}
+                          'f:name': {}
+                    'k:{"name":"NACOS_REPLICAS"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"MYSQL_SERVICE_PORT"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef':
+                          .: {}
+                          'f:key': {}
+                          'f:name': {}
+                    .: {}
+                    'k:{"name":"PREFER_HOST_MODE"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"POD_NAMESPACE"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:fieldRef':
+                          .: {}
+                          'f:apiVersion': {}
+                          'f:fieldPath': {}
+                    'k:{"name":"MYSQL_SERVICE_HOST"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef':
+                          .: {}
+                          'f:key': {}
+                          'f:name': {}
+                    'k:{"name":"MYSQL_SERVICE_USER"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:secretKeyRef':
+                          .: {}
+                          'f:key': {}
+                          'f:name': {}
+                    'k:{"name":"MYSQL_SERVICE_DB_NAME"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef':
+                          .: {}
+                          'f:key': {}
+                          'f:name': {}
+                    'k:{"name":"DOMAIN_NAME"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"SERVICE_NAME"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                  'f:terminationMessagePath': {}
+                  'f:imagePullPolicy': {}
+                  'f:ports':
+                    .: {}
+                    'k:{"containerPort":8848,"protocol":"TCP"}':
+                      .: {}
+                      'f:containerPort': {}
+                      'f:name': {}
+                      'f:protocol': {}
+                  'f:name': {}
+              'f:dnsPolicy': {}
+              'f:serviceAccount': {}
+              'f:restartPolicy': {}
+              'f:schedulerName': {}
+              'f:terminationGracePeriodSeconds': {}
+              'f:initContainers':
+                .: {}
+                'k:{"name":"peer-finder-plugin-install"}':
+                  .: {}
+                  'f:image': {}
+                  'f:imagePullPolicy': {}
+                  'f:name': {}
+                  'f:resources': {}
+                  'f:terminationMessagePath': {}
+                  'f:terminationMessagePolicy': {}
+                  'f:volumeMounts':
+                    .: {}
+                    'k:{"mountPath":"/home/nacos/plugins/peer-finder"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+              'f:serviceAccountName': {}
+              'f:securityContext': {}
+              'f:affinity':
+                .: {}
+                'f:podAntiAffinity':
+                  .: {}
+                  'f:requiredDuringSchedulingIgnoredDuringExecution': {}
+          'f:updateStrategy':
+            'f:rollingUpdate':
+              .: {}
+              'f:partition': {}
+            'f:type': {}
+          'f:volumeClaimTemplates': {}
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: apps/v1
+      time: '2020-10-10T08:56:43Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          'f:collisionCount': {}
+          'f:currentReplicas': {}
+          'f:currentRevision': {}
+          'f:observedGeneration': {}
+          'f:readyReplicas': {}
+          'f:replicas': {}
+          'f:updateRevision': {}
+          'f:updatedReplicas': {}
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nacos
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nacos
+      annotations:
+        pod.alpha.kubernetes.io/initialized: 'true'
+    spec:
+      restartPolicy: Always
+      initContainers:
+        - name: peer-finder-plugin-install
+          image: 'nacos/nacos-peer-finder-plugin:1.0'
+          resources: {}
+          volumeMounts:
+            - name: plugindir
+              mountPath: /home/nacos/plugins/peer-finder
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      serviceAccountName: useroot
+      schedulerName: default-scheduler
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - nacos
+              topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources:
+            limits:
+              cpu: '3'
+              memory: 2Gi
+            requests:
+              cpu: 1500m
+              memory: 2Gi
+          terminationMessagePath: /dev/termination-log
+          name: nacos
+          env:
+            - name: NACOS_REPLICAS
+              value: '1'
+            - name: SERVICE_NAME
+              value: nacos-headless
+            - name: DOMAIN_NAME
+              value: cluster.local
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: MYSQL_SERVICE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.db.name
+            - name: MYSQL_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.port
+            - name: MYSQL_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.host
+            - name: MYSQL_SERVICE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: mysql.user
+            - name: MYSQL_SERVICE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: mysql.password
+            - name: NACOS_SERVER_PORT
+              value: '8848'
+            - name: PREFER_HOST_MODE
+              value: hostname
+          ports:
+            - name: client-port
+              containerPort: 8848
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: plugindir
+              mountPath: /home/nacos/plugins/peer-finder
+            - name: datadir
+              mountPath: /home/nacos/data
+            - name: logdir
+              mountPath: /home/nacos/logs
+          terminationMessagePolicy: File
+          image: 'nacos/nacos-server:1.2.1'
+      serviceAccount: useroot
+      dnsPolicy: ClusterFirst
+  volumeClaimTemplates:
+    - kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: plugindir
+        creationTimestamp: null
+        annotations:
+          volume.beta.kubernetes.io/storage-class: nas-data
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+    - kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: datadir
+        creationTimestamp: null
+        annotations:
+          volume.beta.kubernetes.io/storage-class: nas-data
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+    - kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: logdir
+        creationTimestamp: null
+        annotations:
+          volume.beta.kubernetes.io/storage-class: nas-log
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+  serviceName: nacos-headless
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+  revisionHistoryLimit: 10
+status:
+  observedGeneration: 24
+  replicas: 3
+  readyReplicas: 3
+  currentReplicas: 3
+  updatedReplicas: 3
+  currentRevision: nacos-c8685688b
+  updateRevision: nacos-c8685688b
+  collisionCount: 0

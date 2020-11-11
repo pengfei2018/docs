@@ -1,0 +1,137 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: nacos-mysql
+  labels:
+    app: nacos-mysql
+    app.kubernetes.io/component: database
+    app.kubernetes.io/instance: nacos-mysql
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/part-of: nacos
+spec:
+  strategy:
+    type: Recreate
+    recreateParams:
+    timeoutSeconds: 600
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - nacos-mysql
+        from:
+          kind: ImageStreamTag
+          namespace: ccic-caas-portal-prod
+          name: 'nacos-mysql:5.7'
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    app: nacos-mysql
+    deploymentconfig: nacos-mysql
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nacos-mysql
+        deploymentconfig: nacos-mysql
+    spec:
+      restartPolicy: Always
+      serviceAccountName: useroot
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: nacos-mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_DATABASE
+              value: nacos_devtest
+            - name: MYSQL_USER
+              value: nacos
+            - name: MYSQL_PASSWORD
+              value: nacos
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+            - containerPort: 33060
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: nacos-mysql-data
+              mountPath: /var/lib/mysql
+          terminationMessagePolicy: File
+          image: >-
+              nacos/nacos-mysql:5.7
+    serviceAccount: useroot
+    volumes:
+      - name: nacos-mysql-data
+        persistentVolumeClaim:
+          claimName: nacos-mysql-data
+    dnsPolicy: ClusterFirst
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: nacos-mysql
+  labels:
+    app: nacos-mysql
+    app.kubernetes.io/component: nacos-mysql
+    app.kubernetes.io/instance: nacos-mysql
+    app.kubernetes.io/part-of: nacos
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+    - name: '5.7'
+      annotations:
+        openshift.io/imported-from: 'nacos/nacos-mysql:5.7'
+      from:
+        kind: DockerImage
+        name: 'nacos/nacos-mysql:5.7'
+      importPolicy: {}
+      referencePolicy:
+        type: Source
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nacos-mysql-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: nas-data
+  volumeMode: Filesystem
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nacos-mysql
+labels:
+  app: nacos-mysql
+  app.kubernetes.io/component: nacos-mysql
+  app.kubernetes.io/instance: nacos-mysql
+  app.kubernetes.io/part-of: nacos
+spec:
+  ports:
+    - name: 3306-tcp
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+    - name: 33060-tcp
+      protocol: TCP
+      port: 33060
+      targetPort: 33060
+  selector:
+    app: nacos-mysql
+    deploymentconfig: nacos-mysql
+  type: ClusterIP
+  sessionAffinity: None

@@ -1,0 +1,174 @@
+﻿kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  annotations:
+    app.openshift.io/connects-to: mysql
+    kubectl.kubernetes.io/last-applied-configuration: >
+      {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"name":"nacos","namespace":"baodai-bxmxapp-test"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"nacos"}},"serviceName":"nacos-headless","template":{"metadata":{"annotations":{"pod.alpha.kubernetes.io/initialized":"true"},"labels":{"app":"nacos"}},"spec":{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["nacos"]}]},"topologyKey":"kubernetes.io/hostname"}]}},"containers":[{"env":[{"name":"NACOS_REPLICAS","value":"3"},{"name":"SERVICE_NAME","value":"nacos-headless"},{"name":"DOMAIN_NAME","value":"cluster.local"},{"name":"POD_NAMESPACE","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.namespace"}}},{"name":"MYSQL_SERVICE_DB_NAME","valueFrom":{"configMapKeyRef":{"key":"mysql.db.name","name":"nacos-cm"}}},{"name":"MYSQL_SERVICE_PORT","valueFrom":{"configMapKeyRef":{"key":"mysql.port","name":"nacos-cm"}}},{"name":"MYSQL_SERVICE_USER","valueFrom":{"configMapKeyRef":{"key":"mysql.user","name":"nacos-cm"}}},{"name":"MYSQL_SERVICE_PASSWORD","valueFrom":{"configMapKeyRef":{"key":"mysql.password","name":"nacos-cm"}}},{"name":"NACOS_SERVER_PORT","value":"8848"},{"name":"PREFER_HOST_MODE","value":"hostname"}],"image":"nacos/nacos-server:latest","imagePullPolicy":"Always","name":"nacos","ports":[{"containerPort":8848,"name":"client-port"}],"resources":{"requests":{"cpu":"500m","memory":"2Gi"}},"volumeMounts":[{"mountPath":"/home/nacos/plugins/peer-finder","name":"plugindir"},{"mountPath":"/home/nacos/data","name":"datadir"},{"mountPath":"/home/nacos/logs","name":"logdir"}]}],"initContainers":[{"image":"nacos/nacos-peer-finder-plugin:1.0","imagePullPolicy":"Always","name":"peer-finder-plugin-install","volumeMounts":[{"mountPath":"/home/nacos/plugins/peer-finder","name":"plugindir"}]}],"serviceAccountName":"nfs-client-provisioner"}},"volumeClaimTemplates":[{"metadata":{"annotations":{"volume.beta.kubernetes.io/storage-class":"default-nfs"},"name":"plugindir"},"spec":{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"5Gi"}}}},{"metadata":{"annotations":{"volume.beta.kubernetes.io/storage-class":"default-nfs"},"name":"datadir"},"spec":{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"5Gi"}}}},{"metadata":{"annotations":{"volume.beta.kubernetes.io/storage-class":"default-nfs"},"name":"logdir"},"spec":{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"5Gi"}}}}]}}
+  selfLink: /apis/apps/v1/namespaces/baodai-bxmxapp-test/statefulsets/nacos
+  resourceVersion: '370951678'
+  name: nacos
+  uid: f97b9895-6791-11ea-bb40-005056baac10
+  creationTimestamp: '2020-03-16T14:25:24Z'
+  generation: 49
+  namespace: baodai-bxmxapp-test
+  labels:
+    app: nacos
+    app.kubernetes.io/name: openjdk
+    app.kubernetes.io/part-of: nacos
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nacos
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nacos
+        app.kubernetes.io/part-of: nacos
+      annotations:
+        pod.alpha.kubernetes.io/initialized: 'true'
+    spec:
+      restartPolicy: Always
+      initContainers:
+        - name: peer-finder-plugin-install
+          image: >-
+            tregistry-0.caas-test.ccic-test.com.cn/nacos/nacos-peer-finder-plugin:1.0
+          resources: {}
+          volumeMounts:
+            - name: plugindir
+              mountPath: /home/nacos/plugins/peer-finder
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      serviceAccountName: useroot
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources:
+            limits:
+              cpu: '1'
+              memory: 3Gi
+            requests:
+              cpu: 500m
+              memory: 2Gi
+          terminationMessagePath: /dev/termination-log
+          name: nacos
+          env:
+            - name: NACOS_REPLICAS
+              value: '3'
+            - name: SERVICE_NAME
+              value: nacos-headless
+            - name: DOMAIN_NAME
+              value: cluster.local
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: MYSQL_SERVICE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.db.name
+            - name: MYSQL_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.host
+            - name: MYSQL_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.port
+            - name: MYSQL_SERVICE_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.user
+            - name: MYSQL_SERVICE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.password
+            - name: NACOS_SERVER_PORT
+              value: '8848'
+            - name: PREFER_HOST_MODE
+              value: hostname
+          ports:
+            - name: client-port
+              containerPort: 8848
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: plugindir
+              mountPath: /home/nacos/plugins/peer-finder
+            - name: datadir
+              mountPath: /home/nacos/data
+            - name: logdir
+              mountPath: /home/nacos/logs
+          terminationMessagePolicy: File
+          image: 'tregistry-0.caas-test.ccic-test.com.cn/nacos/nacos-server:1.2.1'
+      serviceAccount: useroot
+      dnsPolicy: ClusterFirst
+  volumeClaimTemplates:
+    - metadata:
+        name: plugindir
+        creationTimestamp: null
+        annotations:
+          volume.beta.kubernetes.io/storage-class: default-nfs
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+    - metadata:
+        name: datadir
+        creationTimestamp: null
+        annotations:
+          volume.beta.kubernetes.io/storage-class: default-nfs
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+    - metadata:
+        name: logdir
+        creationTimestamp: null
+        annotations:
+          volume.beta.kubernetes.io/storage-class: default-nfs
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+  serviceName: nacos-headless
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+  revisionHistoryLimit: 10
+status:
+  observedGeneration: 49
+  replicas: 3
+  readyReplicas: 3
+  currentReplicas: 3
+  updatedReplicas: 3
+  currentRevision: nacos-5cb7759c65
+  updateRevision: nacos-5cb7759c65
+  collisionCount: 0

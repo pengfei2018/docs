@@ -1,0 +1,35 @@
+﻿kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: nginx
+  namespace: omcc-test
+  selfLink: /apis/route.openshift.io/v1/namespaces/omcc-test/routes/nginx
+  uid: a8269f0c-0cd8-429d-a205-7bbb8c7d9d94
+  resourceVersion: '243010990'
+  creationTimestamp: '2020-07-09T08:55:15Z'
+  labels:
+    app: nginx
+    app.kubernetes.io/component: nginx
+    app.kubernetes.io/instance: nginx
+    app.kubernetes.io/name: nginx-114-rhel7
+  annotations:
+    openshift.io/host.generated: 'true'
+spec:
+  host: nginx-omcc-test.caas.ccic-test.com.cn
+  to:
+    kind: Service
+    name: nginx
+    weight: 100
+  port:
+    targetPort: 8080-tcp
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: nginx-omcc-test.caas.ccic-test.com.cn
+      routerName: default
+      conditions:
+        - type: Admitted
+          status: 'True'
+          lastTransitionTime: '2020-07-09T08:55:15Z'
+      wildcardPolicy: None
+      routerCanonicalHostname: caas.ccic-test.com.cn

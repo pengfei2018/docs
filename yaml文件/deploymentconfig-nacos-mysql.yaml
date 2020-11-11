@@ -1,0 +1,88 @@
+﻿kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: nacos-mysql
+  namespace: ccic-caas-portal-uat
+  labels:
+    app: nacos-mysql
+    app.kubernetes.io/component: database
+    app.kubernetes.io/instance: nacos-mysql
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/part-of: nacos
+    app.openshift.io/runtime: mariadb
+spec:
+  strategy:
+    type: Recreate
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - nacos-mysql
+        from:
+          kind: ImageStreamTag
+          namespace: ccic-caas-portal-uat
+          name: 'nacos-mysql:5.7'
+        lastTriggeredImage: >-
+          image-registry.openshift-image-registry.svc:5000/ccic-caas-portal-uat/nacos-mysql@sha256:d902c554441c5ae4ae56a591043985486c635f8d9ba1198cdeca351de45d6472
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    app: nacos-mysql
+    deploymentconfig: nacos-mysql
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nacos-mysql
+        deploymentconfig: nacos-mysql
+      annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+    spec:
+      restartPolicy: Always
+      serviceAccountName: useroot
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      nodeName: tworker-0.caas-test.ccic-test.com.cn
+      securityContext: {}
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: nacos-mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_DATABASE
+              value: nacos_devtest
+            - name: MYSQL_USER
+              value: nacos
+            - name: MYSQL_PASSWORD
+              value: nacos
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+            - containerPort: 33060
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: nacos-mysql-data
+              mountPath: /var/lib/mysql
+          terminationMessagePolicy: File
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/ccic-caas-portal-uat/nacos-mysql@sha256:d902c554441c5ae4ae56a591043985486c635f8d9ba1198cdeca351de45d6472
+      serviceAccount: useroot
+      volumes:
+        - name: nacos-mysql-1
+          emptyDir: {}
+        - name: nacos-mysql-data
+          persistentVolumeClaim:
+            claimName: nacos-mysql-data
+      dnsPolicy: ClusterFirst
+  replicas: 1
+  readyReplicas: 1

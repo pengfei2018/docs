@@ -1,0 +1,154 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: nacos
+  namespace: ccic-caas-portal-prod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nacos
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nacos
+      annotations:
+        pod.alpha.kubernetes.io/initialized: 'true'
+    spec:
+      restartPolicy: Always
+      initContainers:
+        - name: peer-finder-plugin-install
+          image: 'harbor.vm.lab/nacos/nacos-peer-finder-plugin:1.0'
+          resources: {}
+          volumeMounts:
+            - name: plugindir
+              mountPath: /home/nacos/plugins/peer-finder
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      serviceAccountName: nfs-client-provisioner
+      schedulerName: default-scheduler
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - nacos
+              topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources:
+            requests:
+              cpu: 500m
+              memory: 2Gi
+          terminationMessagePath: /dev/termination-log
+          name: nacos
+          env:
+            - name: NACOS_REPLICAS
+              value: '3'
+            - name: SERVICE_NAME
+              value: nacos-headless
+            - name: DOMAIN_NAME
+              value: cluster.local
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: MYSQL_SERVICE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.db.name
+            - name: MYSQL_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.port
+            - name: MYSQL_SERVICE_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.user
+            - name: MYSQL_SERVICE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.password
+            - name: NACOS_SERVER_PORT
+              value: '8848'
+            - name: PREFER_HOST_MODE
+              value: hostname
+            - name: MYSQL_SERVICE_HOST
+              value: mysql
+          ports:
+            - name: client-port
+              containerPort: 8848
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: plugindir
+              mountPath: /home/nacos/plugins/peer-finder
+            - name: datadir
+              mountPath: /home/nacos/data
+            - name: logdir
+              mountPath: /home/nacos/logs
+          terminationMessagePolicy: File
+          image: 'harbor.vm.lab/nacos/nacos-server:latest'
+      serviceAccount: nfs-client-provisioner
+      dnsPolicy: ClusterFirst
+  volumeClaimTemplates:
+    - metadata:
+        name: plugindir
+        creationTimestamp: null
+        annotations:
+          volume.beta.kubernetes.io/storage-class: nfs4data
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+    - metadata:
+        name: datadir
+        creationTimestamp: null
+        annotations:
+          volume.beta.kubernetes.io/storage-class: nfs4data
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+    - metadata:
+        name: logdir
+        creationTimestamp: null
+        annotations:
+          volume.beta.kubernetes.io/storage-class: nfs4data
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+  serviceName: nacos-headless
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+  revisionHistoryLimit: 10

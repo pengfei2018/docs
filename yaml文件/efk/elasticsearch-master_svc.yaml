@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: elasticsearch-1604406461
+    meta.helm.sh/release-namespace: dev
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  labels:
+    app: elasticsearch-master
+    app.kubernetes.io/managed-by: Helm
+    chart: elasticsearch
+    heritage: Helm
+    release: elasticsearch-1604406461
+  name: elasticsearch-master-headless
+  namespace: dev
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 9200
+    protocol: TCP
+    targetPort: 9200
+  - name: transport
+    port: 9300
+    protocol: TCP
+    targetPort: 9300
+  publishNotReadyAddresses: true
+  selector:
+    app: elasticsearch-master
+  sessionAffinity: None
