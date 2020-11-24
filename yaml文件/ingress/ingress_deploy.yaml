@@ -102,6 +102,16 @@ rules:
       - ingresses/status
     verbs:
       - update
+#########开启10245端口，否则就续检查会失败导致pod一直重启#####
+  - apiGroups:
+      - "extensions"
+      - "networking.k8s.io"
+    resources:
+      - ingresses
+    verbs:
+      - list
+      - watch
+
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
