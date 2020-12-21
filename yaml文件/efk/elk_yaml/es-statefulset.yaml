@@ -67,6 +67,8 @@ spec:
         version: v7.4.3
     spec:
       serviceAccountName: elasticsearch-logging
+      imagePullSecrets:
+      - name: docker-tech.ikunchi.com.key
       containers:
         - image: docker-tech.ikunchi.com/fluentd_elasticsearch/elasticsearch:v7.4.3
           name: elasticsearch-logging
